@@ -1,0 +1,45 @@
+class DlistNode: #노드를 하나 만든다
+    def __init__(self, data=None):
+        self.data = data
+        self.llink = None
+        self.rlink = None
+class DoublyLinkedList: #노드 연결 및 관리
+    def __init__(self):
+        self.head = DlistNode() 
+
+        self.head.llink = self.head #하나의 헤드가 자기 자신을 가리키도록 한다
+        self.head.rlink = self.head #하나의 헤드가 자기 자신을 가리키도록 한다
+
+    def insert(self, before, data):
+        newnode = DlistNode(data)
+
+        newnode.llink = before #새로운 노드의 왼쪽 링크는 이전을 가리킨다.
+        newnode.rlink = before.rlink #새로운 노드의 오른쪽 링크는 이전 노드의 오른쪽 링크를 가리킨다.
+        before.rlink.llink = newnode #이전 노드의 오른쪽 링크의(다음 노드) 왼쪽 링크는 새로운 노드를 가리킨다.
+        before.rlink = newnode #이전 노드의 오른쪽 링크는 새로운 노드를 가리킨다.
+
+        return newnode
+
+    def delete(self, removed):
+        if removed == self.head:
+            return
+        removed.llink.rlink = removed.rlink # befoore 노드의 오른쪽 링크는 다음 노드를 가리킴
+        removed.rlink.llink = removed.llink # 다음 노드의 왼쪽은 before 노드를 가리킴
+
+    def print_list(self):
+        p= self.head.rlink # p는 헤드의 오른쪽 링크 즉 첫번째 노드
+
+        while p != self.head: # p가 헤드가 될 때까지 반복
+            print(p.data, end=" ")
+            p=p.rlink # 다음 노드로 이동
+
+        print()
+
+L = DoublyLinkedList()
+n1 = L.insert(L.head, 10)
+n2 = L.insert(n1, 20)
+n3 = L.insert(n2, 30)
+L.print_list()
+L.delete(n2)
+
+L.print_list()

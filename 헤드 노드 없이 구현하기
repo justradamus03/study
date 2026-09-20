@@ -1,0 +1,150 @@
+class Node:
+    def __init__(self, data):
+
+        self.data = data
+        self.prev= None
+        self.next= None
+
+class DoublyLinkedList:
+    def __init__(self):
+
+        self.head = None
+        self.tail = None
+
+    def insert_first(self, data):
+        newnode = Node(data)
+
+        if self.head is None:
+            self.head = newnode
+            self.tail = newnode
+        else:
+            newnode.next = self.head
+            self.head.prev = newnode
+            self.head = newnode
+
+    def insert_last(self, data):
+        newnode = Node(data)
+        if self.head is None:
+            self.head = newnode
+            self.tail = newnode
+        else:
+            newnode.prev = self.tail
+            self.tail.next = newnode
+            self.tail = newnode
+
+    def insert_after(self, target, data):
+        target_node = self.head
+
+        while target_node is not None:
+            if target_node.data == target:
+                break
+            target_node = target_node.next
+        if target_node is None:
+                return
+        
+        newnode = Node(data)
+        newnode.prev = target_node
+        newnode.next = target_node.next
+        if target_node.next is not None: #타겟 노드가 마지막 노드가 아닌 경우
+            target_node.next.prev = newnode 
+            target_node.next = newnode
+        else: #타겟 노드가 마지막 노드인 경우
+            target.next = newnode
+            self.tail = newnode 
+
+    def delete_first(self):
+        if self.head is None:
+            return
+        if self.head == self.tail: #노드가 하나인 경우
+            self.head = None
+            self.tail = None
+        else:
+            self.head = self.head.next
+            self.head.prev = None
+
+    def delete_last(self):
+        if self.head is None: #노드가 없는 경우
+            return    
+        if self.head == self.tail: #노드가 하나인 경우
+            self.head = None
+            self.tail = None
+        else:
+            self.tail = self.tail.prev
+            self.tail.next = None
+
+    def delete(self, data):
+        target_node = self.head
+
+        while target_node is not None:
+            if target_node.data == data:
+                break
+            target_node = target_node.next
+
+        if target_node is None:
+            return
+
+        if target_node == self.head and target_node == self.tail: #노드가 하나인 경우
+            self.head = None
+            self.tail = None
+        elif target_node == self.head: #첫 번째 노드인 경우
+            self.head = self.head.next
+            self.head.prev = None
+        elif target_node == self.tail: #마지막 노드인 경우
+            self.tail = self.tail.prev
+            self.tail.next = None
+        else: #중간 노드인 경우
+            target_node.prev.next = target_node.next
+            target_node.next.prev = target_node.prev
+
+    def search(self, data):
+        current = self.head
+        while current is not None:
+            if current.data == data:
+                return current
+            current = current.next
+        return None
+    def print_forward(self):
+        current = self.head
+        while current is not None:
+            print(current.data, end=" ")
+            current = current.next
+        print()
+    def print_backward(self):
+        current = self.tail
+        while current is not None:
+            print(current.data, end=" ")
+            current = current.prev
+        print()
+
+L = DoublyLinkedList()
+# 삽입 테스트
+L.insert_first(20)
+L.insert_first(10)
+L.insert_last(30)
+L.insert_last(40)
+print("Forward:")
+L.print_forward()
+# 예상 결과: 10 20 30 40
+print("Backward:")
+L.print_backward()
+# 예상 결과: 40 30 20 10
+# 중간 삽입 테스트
+L.insert_after(20, 25)
+print("After insert:")
+L.print_forward()
+# 예상 결과: 10 20 25 30 40
+
+# 삭제 테스트
+L.delete_first()
+L.delete_last()
+L.delete(25)
+print("After delete:")
+L.print_forward()
+# 예상 결과: 20 30
+# 탐색 테스트
+node = L.search(30)
+if node is not None:
+    print("Found:", node.data)
+else:
+    print("Not found")
+# 예상 결과: Found: 30
