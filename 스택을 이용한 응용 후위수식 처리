@@ -1,0 +1,77 @@
+class Converter:
+
+    def __init__(self):
+        self.stack = []
+        self.output = []
+
+    def tokenization(self, expression):
+        expression = expression.replace(" ", "")
+        return list(expression)
+
+    def is_operand(self, token):
+        return token not in "+-*/^()"
+
+    def precedence(self, op):
+        if op in ('+', '-'):
+            return 1
+        elif op in ('*', '/'):
+            return 2
+        elif op == '^':
+            return 3
+        return 0
+
+    def infix_to_postfix(self, expression):
+        self.stack = []
+        self.output = []
+
+        expression = self.tokenization(expression)
+
+        for token in expression:
+
+            # 피연산자
+            if self.is_operand(token):
+                self.output.append(token)
+
+            # 왼쪽 괄호
+            elif token == '(':
+                self.stack.append(token)
+
+            # 오른쪽 괄호
+            elif token == ')':
+                while self.stack and self.stack[-1] != '(':
+                    self.output.append(self.stack.pop())
+
+                self.stack.pop()
+
+            # 연산자
+            else:
+                while (
+                    self.stack
+                    and (
+                        self.precedence(self.stack[-1]) > self.precedence(token)
+                        or
+                        (
+                            self.precedence(self.stack[-1]) == self.precedence(token)
+                            and token != '^'
+                        )
+                    )
+                ):
+                    self.output.append(self.stack.pop())
+
+                self.stack.append(token)
+
+        # 스택에 남은 연산자 모두 출력
+        while self.stack:
+            self.output.append(self.stack.pop())
+
+        return ' '.join(self.output)
+
+
+# 테스트
+converter = Converter()
+
+expression = input("중위표기식 입력: ")
+
+result = converter.infix_to_postfix(expression)
+
+print("후위표기식:", result)

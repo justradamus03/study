@@ -1,0 +1,25 @@
+def eval(exp):
+    s= []
+    for ch in exp:
+        if ch not in '+-*/':
+            value = int(ch)
+            s.append(value)
+
+        else:
+            op1 = s.pop()
+            op2 = s.pop()
+            if ch == '+':
+                s.append(op2 + op1)
+            elif ch == '-':
+                s.append(op2 - op1)
+            elif ch == '*':
+                s.append(op2 * op1)
+            elif ch == '/':
+                s.append(op2 / op1)
+    return s.pop()
+
+exp = input("후위표기식을 입력하세요: ")
+
+result = eval(exp)
+
+print("계산 결과:", result)
